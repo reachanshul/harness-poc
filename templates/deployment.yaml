@@ -1,18 +1,18 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ include "WebApp.fullname" . }}
+  name: {{ include "webapp.fullname" . }}
   labels:
-    {{- include "WebApp.labels" . | nindent 4 }}
+    {{- include "webapp.labels" . | nindent 4 }}
 spec:
   replicas: {{ .Values.replicaCount }}
   selector:
     matchLabels:
-      {{- include "WebApp.selectorLabels" . | nindent 6 }}
+      {{- include "webapp.selectorLabels" . | nindent 6 }}
   template:
     metadata:
       labels:
-        {{- include "WebApp.selectorLabels" . | nindent 8 }}
+        {{- include "webapp.selectorLabels" . | nindent 8 }}
     spec:
       containers:
         - name: {{ .Chart.Name }}
@@ -28,4 +28,4 @@ spec:
       volumes:
         - name: html-volume
           configMap:
-            name: {{ include "WebApp.fullname" . }}
+            name: {{ include "webapp.fullname" . }}
