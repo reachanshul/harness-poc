@@ -1,18 +1,18 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ include "harness-poc.fullname" . }}
+  name: {{ include "WebApp.fullname" . }}
   labels:
-    {{- include "harness-poc.labels" . | nindent 4 }}
+    {{- include "WebApp.labels" . | nindent 4 }}
 spec:
   replicas: {{ .Values.replicaCount }}
   selector:
     matchLabels:
-      {{- include "harness-poc.selectorLabels" . | nindent 6 }}
+      {{- include "WebApp.selectorLabels" . | nindent 6 }}
   template:
     metadata:
       labels:
-        {{- include "harness-poc.selectorLabels" . | nindent 8 }}
+        {{- include "WebApp.selectorLabels" . | nindent 8 }}
     spec:
       containers:
         - name: {{ .Chart.Name }}
@@ -28,4 +28,4 @@ spec:
       volumes:
         - name: html-volume
           configMap:
-            name: {{ include "harness-poc.fullname" . }}
+            name: {{ include "WebApp.fullname" . }}
