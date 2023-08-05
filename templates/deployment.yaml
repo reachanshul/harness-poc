@@ -1,36 +1,3 @@
-# apiVersion: apps/v1
-# kind: Deployment
-# metadata:
-#   name: {{ include "webapp.fullname" . }}
-#   labels:
-#     {{- include "webapp.labels" . | nindent 4 }}
-# spec:
-#   replicas: {{ .Values.replicaCount }}
-#   selector:
-#     matchLabels:
-#       {{- include "webapp.selectorLabels" . | nindent 6 }}
-#   template:
-#     metadata:
-#       labels:
-#         {{- include "webapp.selectorLabels" . | nindent 8 }}
-#     spec:
-#       containers:
-#         - name: {{ .Chart.Name }}
-#           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
-#           imagePullPolicy: {{ .Values.image.pullPolicy }}
-#           ports:
-#             - name: http
-#               containerPort: 80
-#               protocol: TCP
-#           volumeMounts:
-#             - name: html-volume
-#               mountPath: /usr/share/nginx/html
-#       volumes:
-#         - name: html-volume
-#           configMap:
-#             name: {{ include "webapp.fullname" . }}
-
-
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -58,14 +25,9 @@ spec:
           volumeMounts:
             - name: html-volume
               mountPath: /usr/share/nginx/html
-        - name: cpu-stress
-          image: busybox
-          command: ["/bin/sh"]
-          args: ["-c", "while true; do { time dd if=/dev/zero of=/dev/null count=10000 bs=1000 2>/dev/null ; sleep 15; } done"]
-          resources:
-            limits:
-              cpu: "1"
       volumes:
         - name: html-volume
           configMap:
             name: {{ include "webapp.fullname" . }}
+
+
