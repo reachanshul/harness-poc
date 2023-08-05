@@ -29,6 +29,46 @@ pipeline:
                   spec:
                     skipDryRun: false
                     pruningEnabled: false
+                    skipUnchangedManifest: false
+                    delegateSelectors:
+                      - harness-delegate
+                  failureStrategies:
+                    - onFailure:
+                        errors:
+                          - Verification
+                        action:
+                          type: PipelineRollback
+              - step:
+                  type: Verify
+                  name: Verify_1
+                  identifier: Verify_1
+                  spec:
+                    isMultiServicesOrEnvs: false
+                    type: Bluegreen
+                    monitoredService:
+                      type: Default
+                      spec: {}
+                    spec:
+                      sensitivity: HIGH
+                      duration: 5m
+                      deploymentTag: <+artifacts.primary.tag>
+                  timeout: 2h
+                  failureStrategies:
+                    - onFailure:
+                        errors:
+                          - Verification
+                        action:
+                          type: PipelineRollback
+                    - onFailure:
+                        errors:
+                          - Unknown
+                        action:
+                          type: ManualIntervention
+                          spec:
+                            timeout: 2h
+                            onTimeout:
+                              action:
+                                type: Ignore
               - step:
                   name: Swap primary with stage service
                   identifier: bgSwapServices
