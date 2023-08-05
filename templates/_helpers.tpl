@@ -2,7 +2,7 @@
 {{/*
 Expand the name of the chart.
 */}}
-{{- define "harness-poc.name" -}}
+{{- define "WebApp.name" -}}
 {{- default .Chart.Name .Values.nameOverride | trunc 63 | trimSuffix "-" }}
 {{- end }}
 
@@ -10,7 +10,7 @@ Expand the name of the chart.
 Create a default fully qualified app name.
 We truncate at 63 chars because some Kubernetes name fields are limited to this (by the DNS naming spec).
 */}}
-{{- define "harness-poc.fullname" -}}
+{{- define "WebApp.fullname" -}}
 {{- if .Values.fullnameOverride }}
 {{- .Values.fullnameOverride | trunc 63 | trimSuffix "-" }}
 {{- else }}
@@ -26,16 +26,16 @@ We truncate at 63 chars because some Kubernetes name fields are limited to this 
 {{/*
 Create chart name and version as used by the chart label.
 */}}
-{{- define "harness-poc.chart" -}}
+{{- define "WebApp.chart" -}}
 {{- printf "%s-%s" .Chart.Name .Chart.Version | replace "+" "_" | trunc 63 | trimSuffix "-" }}
 {{- end }}
 
 {{/*
 Common labels
 */}}
-{{- define "harness-poc.labels" -}}
-helm.sh/chart: {{ include "harness-poc.chart" . }}
-{{ include "harness-poc.selectorLabels" . }}
+{{- define "WebApp.labels" -}}
+helm.sh/chart: {{ include "WebApp.chart" . }}
+{{ include "WebApp.selectorLabels" . }}
 {{- if .Chart.AppVersion }}
 app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
 {{- end }}
@@ -45,7 +45,7 @@ app.kubernetes.io/managed-by: {{ .Release.Service }}
 {{/*
 Selector labels
 */}}
-{{- define "harness-poc.selectorLabels" -}}
-app.kubernetes.io/name: {{ include "harness-poc.name" . }}
+{{- define "WebApp.selectorLabels" -}}
+app.kubernetes.io/name: {{ include "WebApp.name" . }}
 app.kubernetes.io/instance: {{ .Release.Name }}
 {{- end }}

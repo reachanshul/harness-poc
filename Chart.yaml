@@ -1,4 +1,4 @@
 apiVersion: v2
-name: harness-poc
+name: WebApp
 description: A Helm chart for a simple Nginx application
 version: 0.1.0
