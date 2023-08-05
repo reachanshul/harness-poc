@@ -1,0 +1,92 @@
+pipeline:
+  name: harness-poc-1
+  identifier: harnesspoc1
+  projectIdentifier: default_project
+  orgIdentifier: default
+  tags: {}
+  stages:
+    - stage:
+        name: deploy
+        identifier: deploy
+        description: ""
+        type: Deployment
+        spec:
+          deploymentType: Kubernetes
+          service:
+            serviceRef: hellotest1
+          environment:
+            environmentRef: preprod
+            deployToAll: false
+            infrastructureDefinitions:
+              - identifier: helloweb
+          execution:
+            steps:
+              - step:
+                  name: Rollout Deployment
+                  identifier: rolloutDeployment
+                  type: K8sRollingDeploy
+                  timeout: 10m
+                  spec:
+                    skipDryRun: false
+                    pruningEnabled: false
+                    delegateSelectors:
+                      - harness-delegate
+                  when:
+                    stageStatus: All
+                  failureStrategies:
+                    - onFailure:
+                        errors:
+                          - Verification
+                        action:
+                          type: PipelineRollback
+              - step:
+                  type: Verify
+                  name: Verify
+                  identifier: Verify
+                  timeout: 2h
+                  spec:
+                    isMultiServicesOrEnvs: false
+                    type: Rolling
+                    monitoredService:
+                      type: Default
+                      spec: {}
+                    spec:
+                      sensitivity: HIGH
+                      duration: 5m
+                      deploymentTag: <+artifacts.primary.tag>
+                  failureStrategies:
+                    - onFailure:
+                        errors:
+                          - Verification
+                        action:
+                          type: ManualIntervention
+                          spec:
+                            timeout: 2h
+                            onTimeout:
+                              action:
+                                type: StageRollback
+                    - onFailure:
+                        errors:
+                          - Unknown
+                        action:
+                          type: ManualIntervention
+                          spec:
+                            timeout: 2h
+                            onTimeout:
+                              action:
+                                type: Ignore
+            rollbackSteps:
+              - step:
+                  name: Rollback Rollout Deployment
+                  identifier: rollbackRolloutDeployment
+                  type: K8sRollingRollback
+                  timeout: 10m
+                  spec:
+                    pruningEnabled: false
+        tags: {}
+        failureStrategies:
+          - onFailure:
+              errors:
+                - AllErrors
+              action:
+                type: StageRollback
