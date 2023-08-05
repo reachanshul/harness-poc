@@ -66,12 +66,7 @@ pipeline:
                               errors:
                                 - Verification
                               action:
-                                type: ManualIntervention
-                                spec:
-                                  timeout: 2h
-                                  onTimeout:
-                                    action:
-                                      type: StageRollback
+                                type: PipelineRollback
                           - onFailure:
                               errors:
                                 - Unknown
