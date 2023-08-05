@@ -1,18 +1,18 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ include "my-nginx-chart.fullname" . }}
+  name: {{ include "harness-poc.fullname" . }}
   labels:
-    {{- include "my-nginx-chart.labels" . | nindent 4 }}
+    {{- include "harness-poc.labels" . | nindent 4 }}
 spec:
   replicas: {{ .Values.replicaCount }}
   selector:
     matchLabels:
-      {{- include "my-nginx-chart.selectorLabels" . | nindent 6 }}
+      {{- include "harness-poc.selectorLabels" . | nindent 6 }}
   template:
     metadata:
       labels:
-        {{- include "my-nginx-chart.selectorLabels" . | nindent 8 }}
+        {{- include "harness-poc.selectorLabels" . | nindent 8 }}
     spec:
       containers:
         - name: {{ .Chart.Name }}
@@ -28,4 +28,4 @@ spec:
       volumes:
         - name: html-volume
           configMap:
-            name: {{ include "my-nginx-chart.fullname" . }}
+            name: {{ include "harness-poc.fullname" . }}
