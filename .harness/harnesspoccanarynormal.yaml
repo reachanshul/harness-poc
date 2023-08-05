@@ -1,0 +1,121 @@
+pipeline:
+  name: harness-poc-canary-normal
+  identifier: harnesspoccanarynormal
+  projectIdentifier: default_project
+  orgIdentifier: default
+  tags: {}
+  stages:
+    - stage:
+        name: deploy
+        identifier: deploy
+        description: ""
+        type: Deployment
+        spec:
+          deploymentType: Kubernetes
+          service:
+            serviceRef: hellotest1
+          environment:
+            environmentRef: preprod
+            deployToAll: false
+            infrastructureDefinitions:
+              - identifier: harnesspoccanary
+          execution:
+            steps:
+              - stepGroup:
+                  name: Canary Deployment
+                  identifier: canaryDepoyment
+                  steps:
+                    - step:
+                        name: Canary Deployment
+                        identifier: canaryDeployment
+                        type: K8sCanaryDeploy
+                        timeout: 10m
+                        spec:
+                          instanceSelection:
+                            type: Count
+                            spec:
+                              count: 2
+                          skipDryRun: false
+                          delegateSelectors:
+                            - harness-delegate
+                        when:
+                          stageStatus: All
+                        failureStrategies:
+                          - onFailure:
+                              errors:
+                                - Verification
+                              action:
+                                type: PipelineRollback
+                    - step:
+                        type: Verify
+                        name: Verify
+                        identifier: Verify
+                        timeout: 2h
+                        spec:
+                          isMultiServicesOrEnvs: false
+                          type: Canary
+                          monitoredService:
+                            type: Default
+                            spec: {}
+                          spec:
+                            sensitivity: HIGH
+                            duration: 5m
+                            deploymentTag: <+artifacts.primary.tag>
+                        failureStrategies:
+                          - onFailure:
+                              errors:
+                                - Verification
+                              action:
+                                type: ManualIntervention
+                                spec:
+                                  timeout: 2h
+                                  onTimeout:
+                                    action:
+                                      type: StageRollback
+                          - onFailure:
+                              errors:
+                                - Unknown
+                              action:
+                                type: ManualIntervention
+                                spec:
+                                  timeout: 2h
+                                  onTimeout:
+                                    action:
+                                      type: Ignore
+                    - step:
+                        name: Canary Delete
+                        identifier: canaryDelete
+                        type: K8sCanaryDelete
+                        timeout: 10m
+                        spec: {}
+              - stepGroup:
+                  name: Primary Deployment
+                  identifier: primaryDepoyment
+                  steps:
+                    - step:
+                        name: Rolling Deployment
+                        identifier: rollingDeployment
+                        type: K8sRollingDeploy
+                        timeout: 10m
+                        spec:
+                          skipDryRun: false
+            rollbackSteps:
+              - step:
+                  name: Canary Delete
+                  identifier: rollbackCanaryDelete
+                  type: K8sCanaryDelete
+                  timeout: 10m
+                  spec: {}
+              - step:
+                  name: Rolling Rollback
+                  identifier: rollingRollback
+                  type: K8sRollingRollback
+                  timeout: 10m
+                  spec: {}
+        tags: {}
+        failureStrategies:
+          - onFailure:
+              errors:
+                - AllErrors
+              action:
+                type: StageRollback
