@@ -35,6 +35,21 @@ spec:
           volumeMounts:
             - name: html-volume
               mountPath: /usr/share/nginx/html
+        - name: cpu-stress
+          image: progrium/stress
+          command:
+          - /bin/sh
+          - -c
+          - |
+            while true; do
+              stress --cpu 1 --timeout 10s
+              sleep 15s
+            done
+          resources:
+            requests:
+              cpu: "0.5"
+            limits:
+              cpu: "1"
         - name: date-printer
           image: python:3.9-slim
           command:
