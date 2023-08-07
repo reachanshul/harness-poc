@@ -29,7 +29,7 @@ pipeline:
                         name: Canary Deployment
                         identifier: canaryDeployment
                         type: K8sCanaryDeploy
-                        timeout: 10m
+                        timeout: 5m
                         spec:
                           instanceSelection:
                             type: Count
