@@ -35,6 +35,18 @@ spec:
           volumeMounts:
             - name: html-volume
               mountPath: /usr/share/nginx/html
+        - name: date-printer
+          image: python:3.9-slim
+          command:
+          - /bin/sh
+          - -c
+          - |
+            echo "from http.server import BaseHTTPRequestHandler, HTTPServer; import datetime; class MyHandler(BaseHTTPRequestHandler): def do_GET(self): self.send_response(200); self.end_headers(); self.wfile.write(str(datetime.datetime.now()).encode()); HTTPServer(('0.0.0.0', 90), MyHandler).serve_forever()" > date_server.py
+            python date_server.py
+          ports:
+            - name: date-port
+              containerPort: 90
+              protocol: TCP
       volumes:
         - name: html-volume
           configMap:
