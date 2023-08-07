@@ -43,7 +43,7 @@ pipeline:
                   type: Verify
                   name: Verify
                   identifier: Verify
-                  timeout: 2h
+                  timeout: 15m
                   spec:
                     isMultiServicesOrEnvs: false
                     type: Rolling
@@ -59,7 +59,12 @@ pipeline:
                         errors:
                           - Verification
                         action:
-                          type: PipelineRollback
+                          type: ManualIntervention
+                          spec:
+                            timeout: 10m
+                            onTimeout:
+                              action:
+                                type: MarkAsFailure
                     - onFailure:
                         errors:
                           - Unknown
