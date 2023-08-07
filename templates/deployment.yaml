@@ -22,6 +22,14 @@ spec:
             - name: http
               containerPort: 80
               protocol: TCP
+          readinessProbe:
+            exec:
+              command:
+              - /bin/sh
+              - -c
+              - "exit 1"
+            initialDelaySeconds: 5
+            periodSeconds: 5
           volumeMounts:
             - name: html-volume
               mountPath: /usr/share/nginx/html
