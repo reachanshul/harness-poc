@@ -25,7 +25,7 @@ pipeline:
                   name: Stage Deployment
                   identifier: stageDeployment
                   type: K8sBlueGreenDeploy
-                  timeout: 10m
+                  timeout: 5m
                   spec:
                     skipDryRun: false
                     pruningEnabled: false
