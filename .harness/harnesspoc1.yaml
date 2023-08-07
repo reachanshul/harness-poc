@@ -52,7 +52,7 @@ pipeline:
                       spec: {}
                     spec:
                       sensitivity: HIGH
-                      duration: 5m
+                      duration: 15m
                       deploymentTag: <+artifacts.primary.tag>
                   failureStrategies:
                     - onFailure:
