@@ -43,7 +43,7 @@ pipeline:
                   type: Verify
                   name: Verify
                   identifier: Verify
-                  timeout: 15m
+                  timeout: 30m
                   spec:
                     isMultiServicesOrEnvs: false
                     type: Rolling
