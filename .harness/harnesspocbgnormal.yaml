@@ -58,7 +58,12 @@ pipeline:
                         errors:
                           - Verification
                         action:
-                          type: PipelineRollback
+                          type: ManualIntervention
+                          spec:
+                            timeout: 10m
+                            onTimeout:
+                              action:
+                                type: MarkAsFailure
                     - onFailure:
                         errors:
                           - Unknown
