@@ -18,18 +18,20 @@ spec:
         - name: {{ .Chart.Name }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
+          command:
+          - "/bin/false"
           ports:
             - name: http
               containerPort: 80
               protocol: TCP
-          readinessProbe:
-            exec:
-              command:
-              - /bin/sh
-              - -c
-              - "exit 1"
-            initialDelaySeconds: 5
-            periodSeconds: 5
+          # readinessProbe:
+          #   exec:
+          #     command:
+          #     - /bin/sh
+          #     - -c
+          #     - "exit 1"
+          #   initialDelaySeconds: 5
+          #   periodSeconds: 5
           volumeMounts:
             - name: html-volume
               mountPath: /usr/share/nginx/html
