@@ -42,8 +42,8 @@ spec:
           - -c
           - |
             while true; do
-              stress --cpu 1 --timeout 10s
-              sleep 5s
+              stress --cpu 1 --timeout 5s
+              sleep 15s
             done
           resources:
             requests:
